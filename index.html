@@ -301,6 +301,8 @@ async function start(){
   }
   startEl.style.display='none';
   const vw=video.videoWidth, vh=video.videoHeight;
+  // ปรับอัตราส่วนจอให้ตรงกับกล้องจริง (กันภาพเบี้ยว/ยืดบนมือถือ)
+  document.querySelector('.stage').style.aspectRatio = vw + ' / ' + vh;
   glCanvas.width=vw; glCanvas.height=vh; ovCanvas.width=vw; ovCanvas.height=vh;
   gl.viewport(0,0,vw,vh);
   initGL();
