@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DeepAR Beauty — ต้นแบบ</title>
+<style>
+  :root{--bg:#0e0f13;--panel:#171922;--panel2:#1f2230;--line:#2a2e3d;--text:#e8eaf0;--muted:#9aa0b4;--accent:#ff5f9e;--accent2:#7c5cff;}
+  *{box-sizing:border-box}html,body{margin:0;height:100%}
+  body{background:radial-gradient(1200px 700px at 70% -10%,#1a1330 0%,var(--bg) 55%);color:var(--text);
+    font-family:"Segoe UI","Noto Sans Thai",system-ui,sans-serif;display:flex;min-height:100%;align-items:flex-start;justify-content:center;padding:22px;}
+  .app{width:100%;max-width:1080px;display:grid;grid-template-columns:1fr 330px;gap:18px}
+  @media(max-width:900px){.app{grid-template-columns:1fr}}
+  h1{font-size:19px;margin:0 0 2px}.sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+  .stage{position:relative;background:#000;border-radius:16px;overflow:hidden;border:1px solid var(--line);
+    aspect-ratio:3/4;max-height:74vh;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+  #deepar-div{position:absolute;inset:0;width:100%;height:100%}
+  #deepar-div canvas{width:100%!important;height:100%!important;object-fit:cover}
+  .badge{position:absolute;top:10px;left:10px;z-index:5;background:rgba(0,0,0,.6);border:1px solid var(--line);
+    color:var(--text);font-size:11px;padding:5px 10px;border-radius:999px}
+  .start{position:absolute;inset:0;z-index:8;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;
+    text-align:center;padding:20px;background:linear-gradient(180deg,rgba(20,16,40,.6),rgba(0,0,0,.8))}
+  .start p{color:var(--muted);font-size:13px;max-width:360px;margin:0}
+  .btn{border:0;cursor:pointer;color:#fff;font-weight:600;font-size:15px;padding:13px 26px;border-radius:12px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 8px 24px rgba(255,95,158,.35)}
+  .btn:active{transform:translateY(1px)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
+  .preset{width:100%;margin-bottom:14px;border:0;cursor:pointer;color:#fff;font-weight:700;font-size:14px;
+    padding:11px;border-radius:11px;background:linear-gradient(135deg,#25F4EE,#FE2C55)}
+  .preset:active{transform:translateY(1px)}
+  .grouplbl{font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin:14px 0 8px}
+  .row{margin:0 0 13px}.row label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+  .row label b{color:var(--accent);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--accent);height:4px}
+  .toggle{display:flex;align-items:center;gap:9px;font-size:13px;margin-top:8px}
+  .toggle input{width:16px;height:16px;accent-color:var(--accent2)}
+  .status{font-size:12px;color:var(--muted);margin-top:10px;min-height:16px}
+  .err{color:#ff8a8a}.ok{color:#7fe0a0}
+  .note{font-size:11px;color:var(--muted);margin-top:12px;border-top:1px solid var(--line);padding-top:10px;line-height:1.5}
+  a{color:var(--accent2)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div>
+    <h1>🚀 DeepAR Beauty — ต้นแบบ</h1>
+    <p class="sub">เอนจินบิวตี้เชิงพาณิชย์ (เกลี่ยผิว/ตาโต/เรียวหน้า/ลิป native)</p>
+    <div class="stage">
+      <div class="badge">DeepAR trial · มีลายน้ำ · จำกัด ~3 นาที</div>
+      <div id="deepar-div"></div>
+      <div class="start" id="start">
+        <button class="btn" id="startBtn">▶ เริ่มกล้อง (DeepAR)</button>
+        <p>โหลด DeepAR ครั้งแรกอาจใช้เวลาสัก 5–15 วิ (ดาวน์โหลดโมเดล) — กด "อนุญาต" ตอนถามสิทธิ์กล้อง</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <button class="preset" id="preset">✨ TikTok Look (คลิกเดียว)</button>
+
+    <div class="grouplbl">บิวตี้ (DeepAR)</div>
+    <div class="row"><label>ผิวเนียน <b id="vSkin">70</b></label><input type="range" id="skin" min="0" max="100" value="70"></div>
+    <div class="row"><label>ตาโต <b id="vEye">30</b></label><input type="range" id="eye" min="0" max="100" value="30"></div>
+    <div class="row"><label>เรียวหน้า <b id="vSlim">35</b></label><input type="range" id="slim" min="0" max="100" value="35"></div>
+    <label class="toggle"><input type="checkbox" id="lip"> ทาลิปสติก (nude)</label>
+
+    <div class="status" id="status">ยังไม่เริ่ม</div>
+    <div class="note">
+      DeepAR เวอร์ชันฟรี = มีลายน้ำ + จำกัดเวลา ~3 นาที/ครั้ง (รีเฟรชเพื่อเริ่มใหม่)<br>
+      อยากเทียบกับตัวเดิม? → <a href="./?v=5">เวอร์ชัน MediaPipe (ของเรา)</a>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import * as deepar from 'https://cdn.jsdelivr.net/npm/deepar/js/deepar.esm.js';
+import * as Beauty from 'https://cdn.jsdelivr.net/npm/@deepar/beauty/dist/beauty-deepar.esm.js';
+
+const LICENSE_KEY = "8a09240ee577c70841a14393f30b9304e719b9b51f34a7f87e2a8b3aee7eb9ab15dddd94892b2d4c";
+const BEAUTY_PATH = "https://cdn.jsdelivr.net/npm/@deepar/beauty/dist/";
+
+const $=id=>document.getElementById(id);
+const statusEl=$('status');
+function setStatus(m,cls){ statusEl.textContent=m; statusEl.className='status'+(cls?' '+cls:''); }
+
+const U={ skin:$('skin'), eye:$('eye'), slim:$('slim'), lip:$('lip') };
+const RO={ skin:'vSkin', eye:'vEye', slim:'vSlim' };
+for(const k of Object.keys(RO)) U[k].addEventListener('input',()=>{ $(RO[k]).textContent=U[k].value; apply(); });
+U.lip.addEventListener('change', apply);
+
+$('preset').addEventListener('click',()=>{
+  const s={skin:82,eye:45,slim:45};
+  for(const k in s){ U[k].value=s[k]; $(RO[k]).textContent=s[k]; }
+  U.lip.checked=true; apply();
+});
+
+let deepAR=null, beauty=null;
+
+// each set wrapped so one wrong property can't break the rest
+function safe(fn,label){ try{ fn(); }catch(e){ console.warn('beauty '+label+' failed:',e); } }
+function apply(){
+  if(!beauty) return;
+  safe(()=>beauty.skinSmoothing.set(+U.skin.value), 'skinSmoothing');
+  safe(()=>beauty.faceMorphing.eyeSize.set(+U.eye.value*0.7), 'eyeSize');
+  safe(()=>beauty.faceMorphing.faceShape.set(+U.slim.value*0.6), 'faceShape');
+  safe(()=>{
+    beauty.lipMakeup.lipstick.enable.set(U.lip.checked);
+    if(U.lip.checked){ beauty.lipMakeup.lipstick.shade.setTemplate('matteNude'); beauty.lipMakeup.lipstick.amount.set(65); }
+  }, 'lipstick');
+}
+
+async function start(){
+  $('startBtn').disabled=true;
+  setStatus('กำลังโหลด DeepAR…');
+  try{
+    deepAR = await deepar.initialize({
+      licenseKey: LICENSE_KEY,
+      previewElement: document.querySelector('#deepar-div')
+    });
+    setStatus('กำลังโหลด Beauty…');
+    beauty = await Beauty.initializeBeauty(deepAR, BEAUTY_PATH);
+    apply();
+    $('start').style.display='none';
+    setStatus('● กำลังทำงาน (DeepAR)', 'ok');
+  }catch(e){
+    $('startBtn').disabled=false;
+    const msg = (e && e.message) ? e.message : String(e);
+    setStatus('เริ่มไม่ได้: '+msg, 'err');
+    console.error('DeepAR init error:', e);
+  }
+}
+$('startBtn').addEventListener('click', start);
+</script>
+</body>
+</html>
