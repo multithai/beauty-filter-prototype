@@ -16,7 +16,7 @@
     color:var(--text); font-family:"Segoe UI","Noto Sans Thai",system-ui,sans-serif;
     display:flex; min-height:100%; align-items:flex-start; justify-content:center; padding:22px;
   }
-  .app{width:100%; max-width:1080px; display:grid; grid-template-columns:1fr 320px; gap:18px}
+  .app{width:100%; max-width:1080px; display:grid; grid-template-columns:1fr 330px; gap:18px}
   @media (max-width:900px){ .app{grid-template-columns:1fr} }
   h1{font-size:19px; margin:0 0 2px; letter-spacing:.2px}
   .sub{color:var(--muted); font-size:13px; margin:0 0 14px}
@@ -27,35 +27,32 @@
   .stage canvas{position:absolute; inset:0; width:100%; height:100%; display:block}
   #overlay{pointer-events:none}
   video{display:none}
-  .badge{
-    position:absolute; top:10px; left:10px; z-index:5; background:rgba(0,0,0,.55);
+  .badge{position:absolute; top:10px; left:10px; z-index:5; background:rgba(0,0,0,.55);
     backdrop-filter:blur(6px); border:1px solid var(--line); color:var(--text);
-    font-size:12px; padding:5px 10px; border-radius:999px;
-  }
+    font-size:12px; padding:5px 10px; border-radius:999px;}
   .fps{position:absolute; top:10px; right:10px; z-index:5; background:rgba(0,0,0,.55);
     border:1px solid var(--line); color:var(--muted); font-size:12px; padding:5px 10px; border-radius:999px}
-  .start{
-    position:absolute; inset:0; z-index:8; display:flex; flex-direction:column; gap:14px;
+  .start{position:absolute; inset:0; z-index:8; display:flex; flex-direction:column; gap:14px;
     align-items:center; justify-content:center; text-align:center; padding:20px;
-    background:linear-gradient(180deg,rgba(20,16,40,.6),rgba(0,0,0,.75));
-  }
+    background:linear-gradient(180deg,rgba(20,16,40,.6),rgba(0,0,0,.75));}
   .start p{color:var(--muted); font-size:13px; max-width:360px; margin:0}
-  .btn{
-    border:0; cursor:pointer; color:#fff; font-weight:600; font-size:15px;
+  .btn{border:0; cursor:pointer; color:#fff; font-weight:600; font-size:15px;
     padding:13px 26px; border-radius:12px; background:linear-gradient(135deg,var(--accent),var(--accent2));
-    box-shadow:0 8px 24px rgba(255,95,158,.35);
-  }
+    box-shadow:0 8px 24px rgba(255,95,158,.35);}
   .btn:active{transform:translateY(1px)}
   .panel{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:16px}
-  .row{margin:0 0 15px}
-  .row label{display:flex; justify-content:space-between; font-size:13px; margin-bottom:7px}
+  .preset{width:100%; margin-bottom:14px; border:0; cursor:pointer; color:#fff; font-weight:700; font-size:14px;
+    padding:11px; border-radius:11px; background:linear-gradient(135deg,#25F4EE,#FE2C55);}
+  .preset:active{transform:translateY(1px)}
+  .grouplbl{font-size:11px; letter-spacing:.6px; text-transform:uppercase; color:var(--muted); margin:14px 0 8px}
+  .row{margin:0 0 13px}
+  .row label{display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px}
   .row label b{color:var(--accent); font-variant-numeric:tabular-nums}
   input[type=range]{width:100%; accent-color:var(--accent); height:4px}
   .toggles{display:flex; flex-direction:column; gap:10px; margin-top:6px}
   .toggle{display:flex; align-items:center; gap:9px; font-size:13px; color:var(--text)}
   .toggle input{width:16px; height:16px; accent-color:var(--accent2)}
-  .hint{color:var(--muted); font-size:12px; line-height:1.5; margin-top:12px; border-top:1px solid var(--line); padding-top:12px}
-  .press{width:100%; margin-top:4px; background:var(--panel2); border:1px solid var(--line);
+  .press{width:100%; margin-top:8px; background:var(--panel2); border:1px solid var(--line);
     color:var(--text); border-radius:10px; padding:10px; font-size:13px; cursor:pointer}
   .status{font-size:12px; color:var(--muted); margin-top:10px; min-height:16px}
   .err{color:#ff8a8a}
@@ -65,7 +62,7 @@
 <div class="app">
   <div>
     <h1>✨ Beauty Filter — ต้นแบบ</h1>
-    <p class="sub">MediaPipe หาใบหน้า 468 จุด + WebGL เกลี่ยผิว bilateral 2-pass (ฟรี ไม่มีลายน้ำ)</p>
+    <p class="sub">MediaPipe 468 จุด + WebGL: เกลี่ยผิว bilateral 2-pass + ดัดรูปหน้า (เรียวหน้า/ตาโต)</p>
     <div class="stage">
       <div class="badge" id="badge">กำลังโหลด…</div>
       <div class="fps" id="fps">-- fps</div>
@@ -74,326 +71,259 @@
       <video id="video" playsinline muted></video>
       <div class="start" id="start">
         <button class="btn" id="startBtn">▶ เริ่มกล้อง</button>
-        <p>เบราว์เซอร์จะขออนุญาตใช้กล้อง — กด "อนุญาต" เพื่อเริ่มใช้งาน ภาพประมวลผลในเครื่องคุณทั้งหมด ไม่มีการส่งออกไปไหน</p>
+        <p>เบราว์เซอร์จะขออนุญาตใช้กล้อง — กด "อนุญาต" เพื่อเริ่ม ภาพประมวลผลในเครื่องคุณทั้งหมด ไม่ส่งออกไปไหน</p>
       </div>
     </div>
   </div>
 
   <div class="panel">
-    <div class="row">
-      <label>ผิวเนียน (Skin smooth) <b id="vSmooth">65</b></label>
-      <input type="range" id="smooth" min="0" max="100" value="65">
-    </div>
-    <div class="row">
-      <label>ความสว่าง/ผิวใส (Brighten) <b id="vBright">25</b></label>
-      <input type="range" id="bright" min="0" max="100" value="25">
-    </div>
-    <div class="row">
-      <label>โทนอุ่น (Warmth) <b id="vWarm">20</b></label>
-      <input type="range" id="warm" min="0" max="100" value="20">
-    </div>
-    <div class="row">
-      <label>รักษารายละเอียดผิว (Detail) <b id="vDetail">40</b></label>
-      <input type="range" id="detail" min="0" max="100" value="40">
-    </div>
+    <button class="preset" id="preset">✨ TikTok Look (คลิกเดียว)</button>
+
+    <div class="grouplbl">ผิว (Skin)</div>
+    <div class="row"><label>ผิวเนียน <b id="vSmooth">68</b></label><input type="range" id="smooth" min="0" max="100" value="68"></div>
+    <div class="row"><label>ผิวใส/สว่าง <b id="vBright">32</b></label><input type="range" id="bright" min="0" max="100" value="32"></div>
+    <div class="row"><label>โทนอุ่น <b id="vWarm">24</b></label><input type="range" id="warm" min="0" max="100" value="24"></div>
+    <div class="row"><label>รักษารายละเอียดผิว <b id="vDetail">45</b></label><input type="range" id="detail" min="0" max="100" value="45"></div>
+
+    <div class="grouplbl">ดัดรูปหน้า (Reshape)</div>
+    <div class="row"><label>เรียวหน้า <b id="vSlim">35</b></label><input type="range" id="slim" min="0" max="100" value="35"></div>
+    <div class="row"><label>ตาโต <b id="vEye">30</b></label><input type="range" id="eye" min="0" max="100" value="30"></div>
 
     <div class="toggles">
       <label class="toggle"><input type="checkbox" id="mask" checked> เกลี่ยเฉพาะใบหน้า (ไม่โดนฉากหลัง)</label>
       <label class="toggle"><input type="checkbox" id="mesh"> แสดงจุดตรวจจับใบหน้า</label>
     </div>
-
     <button class="press" id="press">👁️ กดค้างเพื่อดูภาพ "ก่อน" ปรับ</button>
-
     <div class="status" id="status"></div>
-
-    <div class="hint">
-      💡 ถ้าอยากได้ผิว "เนียนแต่ยังเป็นผิวคน" ลอง ผิวเนียน ~60 + รายละเอียด ~45 — ถ้าเห็นเป็นหย่อม/วง แปลว่ารายละเอียดต่ำ+ผิวเนียนสูงเกินไป
-    </div>
   </div>
 </div>
 
 <script type="module">
 import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14";
 
-const video   = document.getElementById('video');
-const glCanvas= document.getElementById('gl');
-const ovCanvas= document.getElementById('overlay');
-const ov      = ovCanvas.getContext('2d');
-const badge   = document.getElementById('badge');
-const fpsEl   = document.getElementById('fps');
-const statusEl= document.getElementById('status');
-const startEl = document.getElementById('start');
+const $=id=>document.getElementById(id);
+const video=$('video'), glCanvas=$('gl'), ovCanvas=$('overlay'), ov=ovCanvas.getContext('2d');
+const badge=$('badge'), fpsEl=$('fps'), statusEl=$('status'), startEl=$('start');
+const U={ smooth:$('smooth'), bright:$('bright'), warm:$('warm'), detail:$('detail'),
+          slim:$('slim'), eye:$('eye'), mask:$('mask'), mesh:$('mesh') };
+const RO={ smooth:'vSmooth', bright:'vBright', warm:'vWarm', detail:'vDetail', slim:'vSlim', eye:'vEye' };
+for(const k of Object.keys(RO)) U[k].addEventListener('input',()=>$(RO[k]).textContent=U[k].value);
 
-const U = {
-  smooth: document.getElementById('smooth'),
-  bright: document.getElementById('bright'),
-  warm:   document.getElementById('warm'),
-  detail: document.getElementById('detail'),
-  mask:   document.getElementById('mask'),
-  mesh:   document.getElementById('mesh'),
-};
-const readout = { smooth:'vSmooth', bright:'vBright', warm:'vWarm', detail:'vDetail' };
-for(const k of Object.keys(readout)){
-  U[k].addEventListener('input', ()=> document.getElementById(readout[k]).textContent = U[k].value);
-}
+$('preset').addEventListener('click',()=>{
+  const set={smooth:72,bright:36,warm:26,detail:42,slim:48,eye:40};
+  for(const k in set){ U[k].value=set[k]; $(RO[k]).textContent=set[k]; }
+  U.mask.checked=true;
+});
 
-let bypass = false;
-const pressBtn = document.getElementById('press');
-pressBtn.addEventListener('mousedown', ()=>bypass=true);
-pressBtn.addEventListener('touchstart', e=>{e.preventDefault();bypass=true},{passive:false});
-window.addEventListener('mouseup', ()=>bypass=false);
-window.addEventListener('touchend', ()=>bypass=false);
-
-function setStatus(msg, isErr){ statusEl.textContent = msg||''; statusEl.className = 'status'+(isErr?' err':''); }
+let bypass=false;
+$('press').addEventListener('mousedown',()=>bypass=true);
+$('press').addEventListener('touchstart',e=>{e.preventDefault();bypass=true},{passive:false});
+window.addEventListener('mouseup',()=>bypass=false);
+window.addEventListener('touchend',()=>bypass=false);
+function setStatus(m,e){ statusEl.textContent=m||''; statusEl.className='status'+(e?' err':''); }
 
 // ---------- WebGL ----------
-const gl = glCanvas.getContext('webgl', {antialias:false});
-if(!gl){ setStatus('เบราว์เซอร์นี้ไม่รองรับ WebGL', true); }
+const gl=glCanvas.getContext('webgl',{antialias:false});
+if(!gl) setStatus('เบราว์เซอร์นี้ไม่รองรับ WebGL', true);
 
-const VS = `
-attribute vec2 a_pos;
-varying vec2 v_uv;
-void main(){
-  v_uv = vec2((a_pos.x+1.0)*0.5, (1.0-a_pos.y)*0.5);
-  gl_Position = vec4(a_pos,0.0,1.0);
-}`;
+const VS=`attribute vec2 a_pos;varying vec2 v_uv;
+void main(){v_uv=vec2((a_pos.x+1.0)*0.5,(1.0-a_pos.y)*0.5);gl_Position=vec4(a_pos,0.0,1.0);}`;
 
-// Pass 1: bilateral blur in X (contiguous samples, no gaps) -> writes to FBO
-const FS_H = `
-precision mediump float;
-varying vec2 v_uv;
-uniform sampler2D u_src;
-uniform vec2 u_texel;
-void main(){
-  vec3 c = texture2D(u_src, v_uv).rgb;
-  vec3 sum = vec3(0.0); float wsum = 0.0;
-  const float sigmaS = 6.0;
-  float sigmaC = 0.20;
-  for(int i=-8;i<=8;i++){
-    float fi = float(i);
-    vec3 s = texture2D(u_src, v_uv + vec2(fi,0.0)*u_texel).rgb;
-    float ws = exp(-(fi*fi)/(2.0*sigmaS*sigmaS));
-    float dc = distance(s,c);
-    float wc = exp(-(dc*dc)/(2.0*sigmaC*sigmaC));
-    float w = ws*wc; sum += s*w; wsum += w;
-  }
-  gl_FragColor = vec4(sum/max(wsum,1e-4), 1.0);
-}`;
+// Pass 1: horizontal bilateral (contiguous) -> FBO
+const FS_H=`precision mediump float;varying vec2 v_uv;uniform sampler2D u_src;uniform vec2 u_texel;
+void main(){vec3 c=texture2D(u_src,v_uv).rgb;vec3 sum=vec3(0.0);float wsum=0.0;const float sigmaS=6.0;float sigmaC=0.20;
+for(int i=-8;i<=8;i++){float fi=float(i);vec3 s=texture2D(u_src,v_uv+vec2(fi,0.0)*u_texel).rgb;
+float ws=exp(-(fi*fi)/(2.0*sigmaS*sigmaS));float dc=distance(s,c);float wc=exp(-(dc*dc)/(2.0*sigmaC*sigmaC));
+float w=ws*wc;sum+=s*w;wsum+=w;}gl_FragColor=vec4(sum/max(wsum,1e-4),1.0);}`;
 
-// Pass 2: bilateral blur in Y on the X-blurred image, then beauty compositing -> screen (mirrored)
-const FS_FINAL = `
-precision mediump float;
+// Pass 2: reshape warp + vertical bilateral + beauty -> screen (mirrored)
+const FS_FINAL=`precision mediump float;
 varying vec2 v_uv;
-uniform sampler2D u_blurH;
-uniform sampler2D u_orig;
+uniform sampler2D u_blurH, u_orig;
 uniform vec2  u_texel;
-uniform float u_smooth;
-uniform float u_detail;
-uniform float u_bright;
-uniform float u_warm;
-uniform vec2  u_faceC;
-uniform vec2  u_faceR;
+uniform float u_smooth,u_detail,u_bright,u_warm,u_bypass;
+uniform vec2  u_faceC,u_faceR;
 uniform float u_useMask;
-uniform float u_bypass;
-void main(){
-  vec2 s_uv = vec2(1.0 - v_uv.x, v_uv.y);         // video: mirror X, top-origin
-  vec2 h_uv = vec2(1.0 - v_uv.x, 1.0 - v_uv.y);   // FBO is Y-inverted vs video, so flip Y
-  vec3 orig = texture2D(u_orig, s_uv).rgb;
-  if(u_bypass > 0.5){ gl_FragColor = vec4(orig,1.0); return; }
+uniform float u_aspect;
+uniform vec2  u_eyeA,u_eyeB;
+uniform float u_eyeRad,u_eyeAmt,u_slimAmt;
 
-  vec3 c = texture2D(u_blurH, h_uv).rgb;
-  vec3 sum = vec3(0.0); float wsum = 0.0;
-  const float sigmaS = 6.0;
-  float sigmaC = 0.20;
-  for(int i=-8;i<=8;i++){
-    float fi = float(i);
-    vec3 s = texture2D(u_blurH, h_uv + vec2(0.0,fi)*u_texel).rgb;
-    float ws = exp(-(fi*fi)/(2.0*sigmaS*sigmaS));
-    float dc = distance(s,c);
-    float wc = exp(-(dc*dc)/(2.0*sigmaC*sigmaC));
-    float w = ws*wc; sum += s*w; wsum += w;
-  }
-  vec3 sm = sum / max(wsum, 1e-4);
-
-  vec3 detail = orig - sm;
-  vec3 beauty = sm + detail * u_detail;   // frequency separation: keep pores
-  beauty += vec3(u_bright);
-  beauty += vec3(u_warm, u_warm*0.15, -u_warm*0.5);
-
-  float amt = u_smooth;
-  if(u_useMask > 0.5){
-    vec2 d = (v_uv - u_faceC) / u_faceR;
-    amt *= 1.0 - smoothstep(0.82, 1.30, dot(d,d));   // soft, wide feather (no hard ring)
-  }
-  vec3 outc = mix(orig, beauty, clamp(amt,0.0,1.0));
-  gl_FragColor = vec4(clamp(outc,0.0,1.0),1.0);
-}`;
-
-function compile(type, src){
-  const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
-  if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
-  return s;
-}
-function makeProgram(fsSrc){
-  const p = gl.createProgram();
-  gl.attachShader(p, compile(gl.VERTEX_SHADER, VS));
-  gl.attachShader(p, compile(gl.FRAGMENT_SHADER, fsSrc));
-  gl.linkProgram(p);
-  if(!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+vec2 eyeBulge(vec2 p, vec2 c, float rad, float amt){
+  if(amt<=0.0||rad<=0.0) return p;
+  vec2 d=p-c; d.x*=u_aspect; float r=length(d);
+  if(r<rad){ float t=1.0-r/rad; float f=1.0-amt*t*t; d*=f; d.x/=u_aspect; p=c+d; }
   return p;
 }
+vec2 reshape(vec2 p){
+  // face slim: pull x toward face axis, strongest at cheeks/mid-lower face
+  if(u_slimAmt>0.0 && u_faceR.x>0.0){
+    float nx=(p.x-u_faceC.x)/u_faceR.x;
+    float ny=(p.y-u_faceC.y)/u_faceR.y;
+    float wX=smoothstep(0.12,0.9,abs(nx))*(1.0-smoothstep(1.0,1.55,abs(nx)));
+    float wY=smoothstep(-0.55,0.05,ny)*(1.0-smoothstep(0.85,1.2,ny));
+    p.x-=u_slimAmt*(p.x-u_faceC.x)*wX*wY;
+  }
+  // eyes bigger
+  p=eyeBulge(p,u_eyeA,u_eyeRad,u_eyeAmt);
+  p=eyeBulge(p,u_eyeB,u_eyeRad,u_eyeAmt);
+  return p;
+}
+void main(){
+  vec2 pw=reshape(v_uv);
+  vec2 s_uv=vec2(1.0-pw.x, pw.y);       // video (mirror X, top-origin)
+  vec2 h_uv=vec2(1.0-pw.x, 1.0-pw.y);   // FBO is Y-inverted
+  vec3 orig=texture2D(u_orig,s_uv).rgb;
+  if(u_bypass>0.5){
+    vec2 so=vec2(1.0-v_uv.x,v_uv.y);      // bypass = raw, no warp
+    gl_FragColor=vec4(texture2D(u_orig,so).rgb,1.0); return;
+  }
+  vec3 c=texture2D(u_blurH,h_uv).rgb;
+  vec3 sum=vec3(0.0);float wsum=0.0;const float sigmaS=6.0;float sigmaC=0.20;
+  for(int i=-8;i<=8;i++){float fi=float(i);vec3 s=texture2D(u_blurH,h_uv+vec2(0.0,fi)*u_texel).rgb;
+    float ws=exp(-(fi*fi)/(2.0*sigmaS*sigmaS));float dc=distance(s,c);float wc=exp(-(dc*dc)/(2.0*sigmaC*sigmaC));
+    float w=ws*wc;sum+=s*w;wsum+=w;}
+  vec3 sm=sum/max(wsum,1e-4);
+  vec3 detail=orig-sm;
+  vec3 beauty=sm+detail*u_detail;
+  beauty+=vec3(u_bright);
+  beauty+=vec3(u_warm,u_warm*0.15,-u_warm*0.5);
+  float amt=u_smooth;
+  if(u_useMask>0.5){ vec2 d=(v_uv-u_faceC)/u_faceR; amt*=1.0-smoothstep(0.82,1.30,dot(d,d)); }
+  vec3 outc=mix(orig,beauty,clamp(amt,0.0,1.0));
+  gl_FragColor=vec4(clamp(outc,0.0,1.0),1.0);
+}`;
 
-let progH, progF, quad, videoTex, fbo, fboTex, aH, aF, locH={}, locF={};
-function initGL(vw, vh){
-  progH = makeProgram(FS_H);
-  progF = makeProgram(FS_FINAL);
+function sh(t,s){const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);
+  if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(o));return o;}
+function prog(fs){const p=gl.createProgram();gl.attachShader(p,sh(gl.VERTEX_SHADER,VS));
+  gl.attachShader(p,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(p);
+  if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(p));return p;}
 
-  quad = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, quad);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
-  aH = gl.getAttribLocation(progH,'a_pos');
-  aF = gl.getAttribLocation(progF,'a_pos');
-
-  locH.u_src   = gl.getUniformLocation(progH,'u_src');
-  locH.u_texel = gl.getUniformLocation(progH,'u_texel');
-  for(const n of ['u_blurH','u_orig','u_texel','u_smooth','u_detail','u_bright','u_warm','u_faceC','u_faceR','u_useMask','u_bypass'])
+let progH,progF,quad,videoTex,fbo,fboTex,aH,aF,locH={},locF={};
+function initGL(vw,vh){
+  progH=prog(FS_H); progF=prog(FS_FINAL);
+  quad=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,quad);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+  aH=gl.getAttribLocation(progH,'a_pos'); aF=gl.getAttribLocation(progF,'a_pos');
+  locH.u_src=gl.getUniformLocation(progH,'u_src'); locH.u_texel=gl.getUniformLocation(progH,'u_texel');
+  for(const n of ['u_blurH','u_orig','u_texel','u_smooth','u_detail','u_bright','u_warm','u_bypass',
+                  'u_faceC','u_faceR','u_useMask','u_aspect','u_eyeA','u_eyeB','u_eyeRad','u_eyeAmt','u_slimAmt'])
     locF[n]=gl.getUniformLocation(progF,n);
-
-  // video texture (unit 0)
-  videoTex = gl.createTexture();
-  gl.bindTexture(gl.TEXTURE_2D, videoTex);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-
-  // FBO texture (unit 1) — holds X-blurred result
-  fboTex = gl.createTexture();
-  gl.bindTexture(gl.TEXTURE_2D, fboTex);
+  videoTex=gl.createTexture(); gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D,videoTex);
+  for(const [k,v] of [['TEXTURE_WRAP_S','CLAMP_TO_EDGE'],['TEXTURE_WRAP_T','CLAMP_TO_EDGE'],
+                      ['TEXTURE_MIN_FILTER','LINEAR'],['TEXTURE_MAG_FILTER','LINEAR']])
+    gl.texParameteri(gl.TEXTURE_2D,gl[k],gl[v]);
+  fboTex=gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D,fboTex);
   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,vw,vh,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-  fbo = gl.createFramebuffer();
-  gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fboTex, 0);
-  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  for(const [k,v] of [['TEXTURE_WRAP_S','CLAMP_TO_EDGE'],['TEXTURE_WRAP_T','CLAMP_TO_EDGE'],
+                      ['TEXTURE_MIN_FILTER','LINEAR'],['TEXTURE_MAG_FILTER','LINEAR']])
+    gl.texParameteri(gl.TEXTURE_2D,gl[k],gl[v]);
+  fbo=gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER,fbo);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,fboTex,0);
+  gl.bindFramebuffer(gl.FRAMEBUFFER,null);
 }
-function bindQuad(aLoc){
-  gl.bindBuffer(gl.ARRAY_BUFFER, quad);
-  gl.enableVertexAttribArray(aLoc);
-  gl.vertexAttribPointer(aLoc,2,gl.FLOAT,false,0,0);
-}
+function bindQuad(a){ gl.bindBuffer(gl.ARRAY_BUFFER,quad); gl.enableVertexAttribArray(a);
+  gl.vertexAttribPointer(a,2,gl.FLOAT,false,0,0); }
 
 // ---------- Face landmarker ----------
-let landmarker = null, faceReady=false;
-const face = { found:false, cx:0.5, cy:0.5, rx:0.3, ry:0.4 };
+let landmarker=null, faceReady=false;
+const face={ found:false, cx:0.5, cy:0.5, rx:0.3, ry:0.4, eAx:0.4, eAy:0.45, eBx:0.6, eBy:0.45, erad:0.08 };
 async function initFace(){
   try{
-    const fileset = await FilesetResolver.forVisionTasks(
-      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm");
-    landmarker = await FaceLandmarker.createFromOptions(fileset, {
-      baseOptions:{
-        modelAssetPath:"https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
-        delegate:"GPU"
-      },
-      runningMode:"VIDEO", numFaces:1
-    });
+    const fileset=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm");
+    landmarker=await FaceLandmarker.createFromOptions(fileset,{
+      baseOptions:{ modelAssetPath:"https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task", delegate:"GPU" },
+      runningMode:"VIDEO", numFaces:1 });
     faceReady=true;
-  }catch(e){
-    faceReady=false;
-    setStatus('โหลดตัวตรวจจับใบหน้าไม่ได้ (ใช้เกลี่ยทั้งภาพแทน): '+e.message, true);
+  }catch(e){ faceReady=false;
+    setStatus('โหลดตัวตรวจจับใบหน้าไม่ได้ (ใช้เกลี่ยทั้งภาพ, ปิดดัดรูปหน้า): '+e.message,true);
     U.mask.checked=false; U.mask.disabled=true; U.mesh.disabled=true;
-  }
+    U.slim.disabled=true; U.eye.disabled=true; }
 }
+let ASPECT=1;
+function avg(pts,idx){ let x=0,y=0; for(const i of idx){x+=pts[i].x;y+=pts[i].y;} return [x/idx.length,y/idx.length]; }
 function updateFace(res){
-  if(!res || !res.faceLandmarks || res.faceLandmarks.length===0){ face.found=false; return; }
-  const pts = res.faceLandmarks[0];
+  if(!res||!res.faceLandmarks||!res.faceLandmarks.length){ face.found=false; return; }
+  const p=res.faceLandmarks[0];
   let minX=1,maxX=0,minY=1,maxY=0;
-  for(const p of pts){ if(p.x<minX)minX=p.x; if(p.x>maxX)maxX=p.x; if(p.y<minY)minY=p.y; if(p.y>maxY)maxY=p.y; }
+  for(const q of p){ if(q.x<minX)minX=q.x; if(q.x>maxX)maxX=q.x; if(q.y<minY)minY=q.y; if(q.y>maxY)maxY=q.y; }
   const cx=(minX+maxX)/2, cy=(minY+maxY)/2, rx=(maxX-minX)/2*1.28, ry=(maxY-minY)/2*1.4;
-  const L = face.found?0.4:1.0;
+  // eye centers -> display space (mirror X)
+  const a=avg(p,[33,133,159,145]), b=avg(p,[362,263,386,374]);
+  const eAx=1-a[0], eAy=a[1], eBx=1-b[0], eBy=b[1];
+  const dx=(eAx-eBx)*ASPECT, dy=eAy-eBy;
+  const erad=0.34*Math.hypot(dx,dy);
+  const L=face.found?0.4:1.0;
   face.cx+=(cx-face.cx)*L; face.cy+=(cy-face.cy)*L; face.rx+=(rx-face.rx)*L; face.ry+=(ry-face.ry)*L;
-  face.found=true;
+  face.eAx+=(eAx-face.eAx)*L; face.eAy+=(eAy-face.eAy)*L; face.eBx+=(eBx-face.eBx)*L; face.eBy+=(eBy-face.eBy)*L;
+  face.erad+=(erad-face.erad)*L; face.found=true;
 }
 function drawMesh(res){
   ov.clearRect(0,0,ovCanvas.width,ovCanvas.height);
-  if(!U.mesh.checked || !res || !res.faceLandmarks || !res.faceLandmarks.length) return;
-  const W=ovCanvas.width, H=ovCanvas.height;
-  ov.fillStyle='rgba(124,92,255,.85)';
-  for(const p of res.faceLandmarks[0]) ov.fillRect((1-p.x)*W-0.5, p.y*H-0.5, 1.6, 1.6);
+  if(!U.mesh.checked||!res||!res.faceLandmarks||!res.faceLandmarks.length) return;
+  const W=ovCanvas.width,H=ovCanvas.height; ov.fillStyle='rgba(124,92,255,.85)';
+  for(const q of res.faceLandmarks[0]) ov.fillRect((1-q.x)*W-0.5,q.y*H-0.5,1.6,1.6);
 }
 
 // ---------- Camera + loop ----------
 let last=performance.now(), frames=0, fpsT=0, VW=0, VH=0;
 async function start(){
-  try{
-    setStatus('กำลังเปิดกล้อง…');
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video:{ width:{ideal:960}, height:{ideal:540}, facingMode:'user' }, audio:false });
-    video.srcObject = stream; await video.play();
-  }catch(e){ setStatus('เปิดกล้องไม่ได้: '+e.message+' — ตรวจสอบสิทธิ์กล้องแล้วลองใหม่', true); return; }
+  try{ setStatus('กำลังเปิดกล้อง…');
+    const stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:960},height:{ideal:540},facingMode:'user'},audio:false});
+    video.srcObject=stream; await video.play();
+  }catch(e){ setStatus('เปิดกล้องไม่ได้: '+e.message+' — ตรวจสอบสิทธิ์กล้องแล้วลองใหม่',true); return; }
   startEl.style.display='none';
-  VW=video.videoWidth; VH=video.videoHeight;
-  document.querySelector('.stage').style.aspectRatio = VW + ' / ' + VH;  // กันภาพเบี้ยว
+  VW=video.videoWidth; VH=video.videoHeight; ASPECT=VW/VH;
+  $('gl').closest('.stage').style.aspectRatio=VW+' / '+VH;
   glCanvas.width=VW; glCanvas.height=VH; ovCanvas.width=VW; ovCanvas.height=VH;
-  initGL(VW, VH);
-  setStatus('กำลังโหลดตัวตรวจจับใบหน้า…');
-  await initFace();
-  setStatus(''); badge.textContent='● กำลังทำงาน';
-  requestAnimationFrame(loop);
+  initGL(VW,VH);
+  setStatus('กำลังโหลดตัวตรวจจับใบหน้า…'); await initFace(); setStatus('');
+  badge.textContent='● กำลังทำงาน'; requestAnimationFrame(loop);
 }
-
 function loop(now){
   requestAnimationFrame(loop);
-  if(video.readyState < 2) return;
-
+  if(video.readyState<2) return;
   let res=null;
-  if(faceReady && landmarker){
-    try{ res = landmarker.detectForVideo(video, now); updateFace(res); }catch(e){}
-  }
+  if(faceReady&&landmarker){ try{ res=landmarker.detectForVideo(video,now); updateFace(res); }catch(e){} }
 
-  // upload current frame to video texture (unit 0)
-  gl.activeTexture(gl.TEXTURE0);
-  gl.bindTexture(gl.TEXTURE_2D, videoTex);
-  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE, video);
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D,videoTex);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,video);
 
-  // ---- Pass 1: horizontal bilateral -> FBO ----
-  gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-  gl.viewport(0,0,VW,VH);
-  gl.useProgram(progH);
-  bindQuad(aH);
-  gl.uniform1i(locH.u_src, 0);
-  gl.uniform2f(locH.u_texel, 1/VW, 1/VH);
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  // pass 1 -> FBO
+  gl.bindFramebuffer(gl.FRAMEBUFFER,fbo); gl.viewport(0,0,VW,VH);
+  gl.useProgram(progH); bindQuad(aH);
+  gl.uniform1i(locH.u_src,0); gl.uniform2f(locH.u_texel,1/VW,1/VH);
+  gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
 
-  // ---- Pass 2: vertical bilateral + beauty -> screen ----
-  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-  gl.viewport(0,0,VW,VH);
-  gl.useProgram(progF);
-  bindQuad(aF);
-  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, fboTex);
-  gl.uniform1i(locF.u_blurH, 1);
-  gl.uniform1i(locF.u_orig, 0);
-  gl.uniform2f(locF.u_texel, 1/VW, 1/VH);
-  gl.uniform1f(locF.u_smooth, +U.smooth.value/100);
-  gl.uniform1f(locF.u_detail, +U.detail.value/100);
-  gl.uniform1f(locF.u_bright, (+U.bright.value/100)*0.18);
-  gl.uniform1f(locF.u_warm,   (+U.warm.value/100)*0.12);
-  gl.uniform1f(locF.u_bypass, bypass?1:0);
-  gl.uniform1f(locF.u_useMask, (U.mask.checked && face.found)?1:0);
-  gl.uniform2f(locF.u_faceC, 1-face.cx, face.cy);
-  gl.uniform2f(locF.u_faceR, Math.max(face.rx,0.05), Math.max(face.ry,0.05));
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  // pass 2 -> screen
+  gl.bindFramebuffer(gl.FRAMEBUFFER,null); gl.viewport(0,0,VW,VH);
+  gl.useProgram(progF); bindQuad(aF);
+  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D,fboTex);
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D,videoTex);
+  gl.uniform1i(locF.u_blurH,1); gl.uniform1i(locF.u_orig,0);
+  gl.uniform2f(locF.u_texel,1/VW,1/VH);
+  gl.uniform1f(locF.u_smooth,+U.smooth.value/100);
+  gl.uniform1f(locF.u_detail,+U.detail.value/100);
+  gl.uniform1f(locF.u_bright,(+U.bright.value/100)*0.18);
+  gl.uniform1f(locF.u_warm,(+U.warm.value/100)*0.12);
+  gl.uniform1f(locF.u_bypass,bypass?1:0);
+  gl.uniform1f(locF.u_useMask,(U.mask.checked&&face.found)?1:0);
+  gl.uniform2f(locF.u_faceC,1-face.cx,face.cy);
+  gl.uniform2f(locF.u_faceR,Math.max(face.rx,0.05),Math.max(face.ry,0.05));
+  gl.uniform1f(locF.u_aspect,ASPECT);
+  gl.uniform2f(locF.u_eyeA,face.eAx,face.eAy);
+  gl.uniform2f(locF.u_eyeB,face.eBx,face.eBy);
+  gl.uniform1f(locF.u_eyeRad,face.erad);
+  const on=face.found?1:0;
+  gl.uniform1f(locF.u_eyeAmt,(+U.eye.value/100)*0.42*on);
+  gl.uniform1f(locF.u_slimAmt,(+U.slim.value/100)*0.30*on);
+  gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
 
   drawMesh(res);
-
   frames++; fpsT+=now-last; last=now;
   if(fpsT>=500){ fpsEl.textContent=Math.round(frames/(fpsT/1000))+' fps'; frames=0; fpsT=0; }
 }
-
-document.getElementById('startBtn').addEventListener('click', start);
+$('startBtn').addEventListener('click',start);
 </script>
 </body>
 </html>
