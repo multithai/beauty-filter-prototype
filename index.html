@@ -196,17 +196,18 @@ uniform vec2  u_faceR;
 uniform float u_useMask;
 uniform float u_bypass;
 void main(){
-  vec2 s_uv = vec2(1.0 - v_uv.x, v_uv.y);   // mirror for selfie view
+  vec2 s_uv = vec2(1.0 - v_uv.x, v_uv.y);         // video: mirror X, top-origin
+  vec2 h_uv = vec2(1.0 - v_uv.x, 1.0 - v_uv.y);   // FBO is Y-inverted vs video, so flip Y
   vec3 orig = texture2D(u_orig, s_uv).rgb;
   if(u_bypass > 0.5){ gl_FragColor = vec4(orig,1.0); return; }
 
-  vec3 c = texture2D(u_blurH, s_uv).rgb;
+  vec3 c = texture2D(u_blurH, h_uv).rgb;
   vec3 sum = vec3(0.0); float wsum = 0.0;
   const float sigmaS = 6.0;
   float sigmaC = 0.20;
   for(int i=-8;i<=8;i++){
     float fi = float(i);
-    vec3 s = texture2D(u_blurH, s_uv + vec2(0.0,fi)*u_texel).rgb;
+    vec3 s = texture2D(u_blurH, h_uv + vec2(0.0,fi)*u_texel).rgb;
     float ws = exp(-(fi*fi)/(2.0*sigmaS*sigmaS));
     float dc = distance(s,c);
     float wc = exp(-(dc*dc)/(2.0*sigmaC*sigmaC));
