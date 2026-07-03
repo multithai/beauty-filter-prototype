@@ -89,6 +89,10 @@
     <div class="row"><label>เรียวหน้า <b id="vSlim">35</b></label><input type="range" id="slim" min="0" max="100" value="35"></div>
     <div class="row"><label>ตาโต <b id="vEye">30</b></label><input type="range" id="eye" min="0" max="100" value="30"></div>
 
+    <div class="grouplbl">จำลองปัญหาผิว (Before/After)</div>
+    <div class="row"><label>สิว (Acne) <b id="vAcne">0</b></label><input type="range" id="acne" min="0" max="100" value="0"></div>
+    <div class="row"><label>ริ้วรอย (Wrinkles) <b id="vWrinkle">0</b></label><input type="range" id="wrinkle" min="0" max="100" value="0"></div>
+
     <div class="toggles">
       <label class="toggle"><input type="checkbox" id="mask" checked> เกลี่ยเฉพาะใบหน้า (ไม่โดนฉากหลัง)</label>
       <label class="toggle"><input type="checkbox" id="mesh"> แสดงจุดตรวจจับใบหน้า</label>
@@ -105,8 +109,8 @@ const $=id=>document.getElementById(id);
 const video=$('video'), glCanvas=$('gl'), ovCanvas=$('overlay'), ov=ovCanvas.getContext('2d');
 const badge=$('badge'), fpsEl=$('fps'), statusEl=$('status'), startEl=$('start');
 const U={ smooth:$('smooth'), bright:$('bright'), warm:$('warm'), detail:$('detail'),
-          slim:$('slim'), eye:$('eye'), mask:$('mask'), mesh:$('mesh') };
-const RO={ smooth:'vSmooth', bright:'vBright', warm:'vWarm', detail:'vDetail', slim:'vSlim', eye:'vEye' };
+          slim:$('slim'), eye:$('eye'), acne:$('acne'), wrinkle:$('wrinkle'), mask:$('mask'), mesh:$('mesh') };
+const RO={ smooth:'vSmooth', bright:'vBright', warm:'vWarm', detail:'vDetail', slim:'vSlim', eye:'vEye', acne:'vAcne', wrinkle:'vWrinkle' };
 for(const k of Object.keys(RO)) U[k].addEventListener('input',()=>$(RO[k]).textContent=U[k].value);
 
 $('preset').addEventListener('click',()=>{
@@ -147,6 +151,8 @@ uniform float u_useMask;
 uniform float u_aspect;
 uniform vec2  u_eyeA,u_eyeB;
 uniform float u_eyeRad,u_eyeAmt,u_slimAmt;
+uniform float u_acne,u_wrinkle;
+float hash1(float n){ return fract(sin(n)*43758.5453123); }
 
 vec2 eyeBulge(vec2 p, vec2 c, float rad, float amt){
   if(amt<=0.0||rad<=0.0) return p;
@@ -190,6 +196,31 @@ void main(){
   float amt=u_smooth;
   if(u_useMask>0.5){ vec2 d=(v_uv-u_faceC)/u_faceR; amt*=1.0-smoothstep(0.82,1.30,dot(d,d)); }
   vec3 outc=mix(orig,beauty,clamp(amt,0.0,1.0));
+  if(u_acne>0.0||u_wrinkle>0.0){
+    vec2 fl=(v_uv-u_faceC)/u_faceR;
+    float onFace=1.0-smoothstep(0.80,1.05,dot(fl,fl));
+    float eyeCut=1.0-(1.0-smoothstep(0.10,0.26,abs(fl.y+0.18)))*(1.0-smoothstep(0.5,0.62,abs(fl.x)));
+    float mouthCut=1.0-(1.0-smoothstep(0.09,0.20,abs(fl.y-0.5)))*(1.0-smoothstep(0.32,0.44,abs(fl.x)));
+    float skin=onFace*clamp(eyeCut*mouthCut,0.0,1.0);
+    if(u_acne>0.0){
+      float ac=0.0;
+      for(int k=0;k<26;k++){ float fk=float(k);
+        vec2 sc=vec2(hash1(fk*12.9+1.3)*1.5-0.75, hash1(fk*7.7+4.1)*1.6-0.8);
+        float active=step(1.02-u_acne, hash1(fk*3.3+0.7));
+        float sr=0.03+hash1(fk*2.1)*0.03;
+        ac=max(ac, active*(1.0-smoothstep(sr*0.4,sr,length(fl-sc)))); }
+      outc=mix(outc, outc*vec3(1.08,0.5,0.48)+vec3(0.05,0.0,0.0), ac*skin*0.85);
+    }
+    if(u_wrinkle>0.0){
+      float w=0.0;
+      float fb=smoothstep(-0.95,-0.6,fl.y)*(1.0-smoothstep(-0.5,-0.25,fl.y))*smoothstep(0.85,0.25,abs(fl.x));
+      w+=fb*smoothstep(0.4,0.65,0.5+0.5*sin(fl.y*55.0));
+      float nb=smoothstep(0.12,0.45,fl.y)*(1.0-smoothstep(0.6,0.9,fl.y))*smoothstep(0.18,0.45,abs(fl.x))*(1.0-smoothstep(0.6,0.85,abs(fl.x)));
+      w+=nb*0.6;
+      w+=hash1(floor(v_uv.x*260.0)+floor(v_uv.y*260.0)*37.0)*0.3;
+      outc=mix(outc, outc*0.78, clamp(w,0.0,1.0)*skin*u_wrinkle);
+    }
+  }
   gl_FragColor=vec4(clamp(outc,0.0,1.0),1.0);
 }`;
 
@@ -207,7 +238,7 @@ function initGL(vw,vh){
   aH=gl.getAttribLocation(progH,'a_pos'); aF=gl.getAttribLocation(progF,'a_pos');
   locH.u_src=gl.getUniformLocation(progH,'u_src'); locH.u_texel=gl.getUniformLocation(progH,'u_texel');
   for(const n of ['u_blurH','u_orig','u_texel','u_smooth','u_detail','u_bright','u_warm','u_bypass',
-                  'u_faceC','u_faceR','u_useMask','u_aspect','u_eyeA','u_eyeB','u_eyeRad','u_eyeAmt','u_slimAmt'])
+                  'u_faceC','u_faceR','u_useMask','u_aspect','u_eyeA','u_eyeB','u_eyeRad','u_eyeAmt','u_slimAmt','u_acne','u_wrinkle'])
     locF[n]=gl.getUniformLocation(progF,n);
   videoTex=gl.createTexture(); gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D,videoTex);
   for(const [k,v] of [['TEXTURE_WRAP_S','CLAMP_TO_EDGE'],['TEXTURE_WRAP_T','CLAMP_TO_EDGE'],
@@ -317,6 +348,8 @@ function loop(now){
   const on=face.found?1:0;
   gl.uniform1f(locF.u_eyeAmt,(+U.eye.value/100)*0.42*on);
   gl.uniform1f(locF.u_slimAmt,(+U.slim.value/100)*0.30*on);
+  gl.uniform1f(locF.u_acne,(+U.acne.value/100)*on);
+  gl.uniform1f(locF.u_wrinkle,(+U.wrinkle.value/100)*on);
   gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
 
   drawMesh(res);
